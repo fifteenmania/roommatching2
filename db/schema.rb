@@ -69,7 +69,6 @@ ActiveRecord::Schema.define(version: 20160829164722) do
 
   create_table "users", force: :cascade do |t|
     t.string   "email",      default: "", null: false
-    t.string   "provider"
     t.string   "image"
     t.string   "gender"
     t.string   "token"
@@ -78,19 +77,11 @@ ActiveRecord::Schema.define(version: 20160829164722) do
     t.string   "birth"
     t.string   "stage"
     t.integer  "univ_id"
-    t.integer  "dong1_id"
-    t.integer  "dong2_id"
-    t.integer  "period1_id"
-    t.integer  "period2_id"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end
 
-  add_index "users", ["dong1_id"], name: "index_users_on_dong1_id"
-  add_index "users", ["dong2_id"], name: "index_users_on_dong2_id"
   add_index "users", ["email"], name: "index_users_on_email", unique: true
-  add_index "users", ["period1_id"], name: "index_users_on_period1_id"
-  add_index "users", ["period2_id"], name: "index_users_on_period2_id"
   add_index "users", ["token"], name: "index_users_on_token", unique: true
   add_index "users", ["univ_id"], name: "index_users_on_univ_id"
 
