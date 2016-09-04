@@ -1,8 +1,8 @@
 class Period < ActiveRecord::Base
     serialize :metadata, Oj
     
-    belongs_to :univ
-    has_many :users
+    has_and_belongs_to_many :users
+    belongs_to :univ, dependent: :destroy
     
     def as_json(options={})
        return super.as_json(only: [:id, :name]) 

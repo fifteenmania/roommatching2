@@ -1,49 +1,32 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
+  include Tokenable
   serialize :metadata, Oj
+
+  has_and_belongs_to_many :dongs
+  has_and_belongs_to_many :periods
   
   has_one :survey
   has_one :preference_survey
   belongs_to :univ
-  belongs_to :dong1, class_name: 'Dong', foreign_key: "dong1_id"
-  belongs_to :dong2, class_name: 'Dong', foreign_key: "dong2_id"
-  belongs_to :period1, class_name: 'Period', foreign_key: "period1_id"
-  belongs_to :period2, class_name: 'Period', foreign_key: "period2_id"
   
   scope :all_except, ->(user) { where.not(id: user) }
   
-  @@basic_info = [:image, :email, :stage]
-  @@profile = [:name, :univ, :birth, :major]
   MATCH_NUM = 3
   
-  def self.from_omniauth(auth)
-    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
-      user.email = auth.info.email
-      user.password = Devise.friendly_token[0,20]
-      user.name = auth.info.name   # assuming the user model has a name
-      user.image = auth.info.image # assuming the user model has an image
-      user.gender = auth.extra.raw_info.gender # assuming the user model has an image
-      user.uid = auth.uid
-      user.provider = auth.provider
-      user.stage = 0
-    end
+  # ------------  token handle ------------- #
+  
+  def self.find_user_with_token(token)
+    User.where(token: token).take
   end
   
-  def self.new_with_session(params, session)
-    super.tap do |user|
-      if data = session["devise.facebook_data"] && session["devise.facebook_data"]["extra"]["raw_info"]
-        user.email = data["email"] if user.email.blank?
-      end
-    end
+  def self.find_id_with_token(token)
+    User.where(token: token).ids.first
   end
   
-  def self.basic_info
-    return @@basic_info
-  end
-  
-  def self.profile
-    return @@profile
+  def self.search_email(email)
+    
   end
   
   # ------------- json queries ------------- #
